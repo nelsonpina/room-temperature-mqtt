@@ -18,7 +18,7 @@ go get golang.org/x/net/proxy
 - Having the MQTT broker running you can then lunch the application:
 ```
 go build
-./room_temperature_mqtt
+./room_temperature_mqtt tcp://localhost:1883
 ```
 - You can simulate temperature readings by publishing messages to the 
 `/readings/temperature` topic
@@ -29,3 +29,4 @@ mosquitto_pub -t "/readings/temperature" -m '{"sensorID": "sensor-1","type":
 
 ### Temperature control logic
 - In this example is assumed that there is a linear relationship between the temperature and the valve openness. In the real world to achieve accurate results this relation needs to be tuned and calibrated for the specific environment.
+- It is assumed that temperature ranges between 0°C and 35°C, for 0°C the valve is set to 100% openness and for 35°C the valve is set to 0% openness.
