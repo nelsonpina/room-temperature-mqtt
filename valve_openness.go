@@ -9,8 +9,10 @@ type ValveOpenness struct {
     Level int `json:"level"`
 }
 
+const valveControlTopic = "/actuators/room-1"
+
 func publishToValve(message string) {
-    publishToTopic("/actuators/room-1", message)
+    publishToTopic(valveControlTopic, message)
 }
 
 func encodeValveIntoJson(valveOpenness int) string {

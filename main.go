@@ -1,12 +1,20 @@
 package main
 
-import "fmt"
+import (
+    "fmt"
+    "os"
+    "strings"
+)
 
 func main() {
     fmt.Println("Initialize Room Temperature Monitor")
 
     // initialize mqtt client
-    initializeClient()
+    if mqttServer := getServerName(os.Args); mqttServer != "" {
+        initializeClient(mqttServer)
+    } else {
+        return
+    }
 
     // subscribe to temperature readings
     subscribeToTemperature()
@@ -16,6 +24,30 @@ func main() {
 
     // shouldn't reach this line
     defer deinitializeClient()
+}
+
+func getServerName (input []string) string {
+    const usageMsg = "Usage: " +
+        "`./room_temperature_mqtt tcp://mqtt-broker-address:1883`"
+
+    if len(input) != 2 {
+        fmt.Println("Invalid number of inputs")
+        fmt.Println(usageMsg)
+        return ""
+    }
+
+    serverName := input[1]
+    if !strings.Contains(serverName, "tcp://") {
+        fmt.Println("Missing valid network protocol")
+        fmt.Println(usageMsg)
+        return ""
+    }
+    if !strings.Contains(serverName, ":1883") {
+        fmt.Println("Missing MQTT valid port")
+        fmt.Println(usageMsg)
+        return ""
+    }
+    return serverName
 }
 
 // room temperature control settings
@@ -44,8 +76,8 @@ func simpleValveControl (roomTemp float32) int {
         return minValveOpenness
     }
 
-    // y = ax + b
-    // a = -2.857142857142857
+    // y = mx + b
+    // m = -2.857142857142857
     // b = 100
     return int(-2.857142857142857 * roomTemp + 100)
 }

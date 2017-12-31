@@ -8,8 +8,8 @@ import (
 )
 
 // mqtt client
-const server   = "tcp://localhost:1883"
-const clientID = "room-1-temp"
+const defaultServer = "tcp://localhost:1883"
+const clientID      = "room-1-temp"
 
 // mqtt variables
 var mqttOptions *mqtt.ClientOptions
@@ -24,7 +24,7 @@ var publishHandler mqtt.MessageHandler = func(client mqtt.Client, msg mqtt.Messa
     }
 }
 
-func initializeClient() {
+func initializeClient(server string) {
     fmt.Println("Initialize MQTT Client")
     mqttOptions = mqtt.NewClientOptions().AddBroker(server).SetClientID(
         clientID)
